@@ -1,0 +1,43 @@
+#!/bin/bash
+
+export XDG_CONFIG_HOME="$HOME/.config"
+
+if [ -d "$HOME/.local/bin" ]; then
+  export PATH="$PATH:$HOME/.local/bin"
+fi
+
+
+####
+## mpc (MPD client)
+####
+
+export MPD_HOST="${XDG_CONFIG_HOME}/mpd/socket"
+
+
+####
+## Start Gnome Keyring
+####
+
+eval $(/usr/bin/gnome-keyring-daemon --components=pkcs11,secrets,ssh,gpg)
+export GNOME_KEYRING_PID
+export GNOME_KEYRING_SOCKET
+export SSH_AUTH_SOCK
+export GPG_AGENT_INFO
+
+
+####
+## Start systemd target
+####
+
+systemctl --user import-environment DISPLAY
+systemctl --user import-environment XDG_CONFIG_HOME
+systemctl --user start xorg.target &
+
+
+####
+## Set previous backlight
+####
+
+BACKLIGHT_DEVICE="backlight:intel_backlight"
+
+sudo /usr/lib/systemd/systemd-backlight load "$BACKLIGHT_DEVICE"

@@ -1,0 +1,9 @@
+[Unit]
+Description=setxkbmap
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/setxkbmap
+
+[Install]
+WantedBy=xorg.target
