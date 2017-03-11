@@ -1,56 +1,52 @@
 #!/usr/bin/env python
 
-import re
 import os
 import sys
-from subprocess import Popen, PIPE
 
 reg = "Battery %d: (\w+), (\d+)%%(, (\d+:\d+):\d+ .+)?"
-bat_number = int(os.getenv("BLOCK_INSTANCE", 0) or 0)
+bat_number = int(os.getenv("BLOCK_INSTANCE", 1) or 1)
 # icons: plug, battery full to empty
 icons = list(u"\uf1e6\uf240\uf241\uf242\uf243\uf244")
-colors = ("#ffffff", "#ffffff", "#a8ff00", "#fff600", "#ffae00", "#ff0000")
+colors = ("#bdd4d7", "#bdd4d7", "#a8ff00", "#fff600", "#ffae00", "#ff0000")
 threshold = (100, 80, 60, 40, 20, 0)
-
-p = Popen(["acpi", "-b"], stdout=PIPE)
-p.wait()
-r = p.stdout.read().strip().splitlines()
-
-for l in r:
-    pattern = re.compile(reg % bat_number)
-    state, percentage, _, remaining = pattern.match(l).groups()
-    percentage = int(percentage)
-    break
-
-code = 0
-if state == "Discharging":
-    i = 0
-    while percentage <= threshold[i]:
-        i += 1
-        code += 1
-
-    power = -1
-
-text = u"{} {}%".format(icons[code], percentage)
-
-if remaining:
-    text += " / " + remaining
-
 root = "/sys/class/power_supply/BAT%d" % bat_number
+
+capacity = int(open(root + "/capacity").read())
+energy_now = int(open(root + "/energy_now").read())
+energy_full = int(open(root + "/energy_full").read())
+status = open(root + "/status").read().strip()
+
 if os.path.exists(root + "/power_now"):
-    power = int(open(root + "/power_now").read()) / 1e6
+    power = int(open(root + "/power_now").read())
 elif os.path.exists(root + "/voltage_now") \
         and os.path.exists(root + "/current_now"):
     voltage = int(open(root + "/voltage_now").read())
     current = int(open(root + "/current_now").read())
-    power = current * voltage * 1e-12
+    power = current * voltage
 
-if round(power) > 0:
-    text += " / %d W" % round(power)
+level = 0
+if status == "Discharging":
+    while capacity <= threshold[level]:
+        level += 1
+
+text = u"{} {}%".format(icons[level], capacity)
+
+if power > 0:
+    if status == "Discharging":
+        r = energy_now / float(power)
+    else:
+        r = (energy_full - energy_now) / float(power)
+
+    remaining = "{}:{:02.0f}".format(int(r), (r - int(r)) * 60)
+    if remaining:
+        text += " / " + remaining
+
+if round(power / 1e6) > 0 and status == "Discharging":
+    text += " / {:.0f} W".format(round(power / 1e6))
 
 print text.encode("utf-8")
 print text.encode("utf-8")
-print colors[code]
+print colors[level]
 
-if percentage <= 5:
+if capacity <= 5:
     sys.exit(33)
