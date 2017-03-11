@@ -1,0 +1,35 @@
+#!/bin/bash
+
+CONFIG="$HOME/.config/wallpaper"
+
+
+_usage() {
+  echo "$0 <file>"
+}
+
+_change() {
+  if [ -f "$1" ]; then
+    echo "$(realpath $1)" > "$CONFIG"
+  else
+    echo "File '$1' not found."
+    exit 1
+  fi
+  _apply
+}
+
+_apply() {
+  if [ ! -f "$CONFIG" ]; then
+    echo "Fail to load config" >&2
+    exit 1
+  fi
+
+  local image="$(<$CONFIG)"
+  /usr/bin/feh --no-fehbg --bg-scale "$image"
+}
+
+
+case "$#" in
+  0) _apply ;;
+  1) _change "$1" ;;
+  *) _usage ;;
+esac

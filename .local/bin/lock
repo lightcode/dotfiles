@@ -1,0 +1,8 @@
+#!/bin/bash
+
+BG=~/Documents/Perso/Wallpapers/nelson.png
+TMPBG=/tmp/screen.png
+RES=`xrandr | grep \* | cut -d' ' -f4`
+convert $BG -resize $RES $TMPBG
+i3lock -d -u -i $TMPBG
+rm $TMPBG

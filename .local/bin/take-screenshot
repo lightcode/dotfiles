@@ -1,0 +1,11 @@
+#!/bin/bash
+
+SCREEN_DIR="${HOME}/screenshots"
+
+mkdir -p "${SCREEN_DIR}"
+
+filename=$(scrot '%Y%m%d-%H%M%S.png' -e "mv \$f ${SCREEN_DIR} && echo \$f" $*)
+
+echo -n "${SCREEN_DIR}/${filename}" | xsel -i
+
+notify-send --urgency=low --expire-time=1000 "Screenshot taked!"
