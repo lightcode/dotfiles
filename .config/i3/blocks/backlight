@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+sys="/sys/class/backlight/${BLOCK_INSTANCE}"
+
+case $BLOCK_BUTTON in
+  4) xbacklight -inc 5 -steps 1 ;; # scroll up
+  5) xbacklight -dec 5 -steps 1 ;; # scroll down
+esac
+
+cur="$(<$sys/actual_brightness)"
+max="$(<$sys/max_brightness)"
+
+printf "%.0f%%" "$(bc <<< "scale=1; $cur * 100 / $max")"

@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+import re
+import os
+import sys
+from subprocess import Popen, PIPE
+
+reg = "Battery %d: (\w+), (\d+)%%(, (\d+:\d+):\d+ .+)?"
+bat_number = int(os.getenv("BLOCK_INSTANCE", 0) or 0)
+# icons: plug, battery full to empty
+icons = list(u"\uf1e6\uf240\uf241\uf242\uf243\uf244")
+colors = ("#ffffff", "#ffffff", "#a8ff00", "#fff600", "#ffae00", "#ff0000")
+threshold = (100, 80, 60, 40, 20, 0)
+
+p = Popen(["acpi", "-b"], stdout=PIPE)
+p.wait()
+r = p.stdout.read().strip().splitlines()
+
+for l in r:
+    pattern = re.compile(reg % bat_number)
+    state, percentage, _, remaining = pattern.match(l).groups()
+    percentage = int(percentage)
+    break
+
+code = 0
+if state == "Discharging":
+    i = 0
+    while percentage <= threshold[i]:
+        i += 1
+        code += 1
+
+    power = -1
+
+text = u"{} {}%".format(icons[code], percentage)
+
+if remaining:
+    text += " / " + remaining
+
+root = "/sys/class/power_supply/BAT%d" % bat_number
+if os.path.exists(root + "/power_now"):
+    power = int(open(root + "/power_now").read()) / 1e6
+elif os.path.exists(root + "/voltage_now") \
+        and os.path.exists(root + "/current_now"):
+    voltage = int(open(root + "/voltage_now").read())
+    current = int(open(root + "/current_now").read())
+    power = current * voltage * 1e-12
+
+if round(power) > 0:
+    text += " / %d W" % round(power)
+
+print text.encode("utf-8")
+print text.encode("utf-8")
+print colors[code]
+
+if percentage <= 5:
+    sys.exit(33)

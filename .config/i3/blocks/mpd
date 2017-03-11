@@ -1,0 +1,47 @@
+#!/bin/bash
+
+ICON_PAUSE=""
+ICON_PLAY=""
+ICON_STOP=""
+
+function mpc_status() {
+  x="$(mpc status | sed -n '2 s/\[\([a-z]*\)].*/\1/p')"
+  [[ -z "$x" ]] && echo "stopped" || echo "$x"
+}
+
+if [[ "$BLOCK_BUTTON" -eq 1 ]]; then
+  if [[ "$(mpc_status)" == "playing" ]]; then
+    if mpc -f '%file%' | grep "http://" &>/dev/null; then
+      mpc stop &>/dev/null
+    else
+      mpc pause &>/dev/null
+    fi
+  else
+    if mpc -f '%file%' | grep "http://" &>/dev/null; then
+      mpc stop &>/dev/null
+    fi
+    mpc play &>/dev/null
+  fi
+fi
+
+mpd_status="$(mpc_status)"
+
+if [[ "$mpd_status" == "stopped" ]]; then
+  echo "${ICON_STOP}  Play"
+  echo "${ICON_STOP}  Play"
+  exit 0
+elif [[ "$mpd_status" != "playing" ]] && [[ "$mpd_status" != "paused" ]]; then
+  exit 0
+fi
+
+# mpd_current_file="$(basename "$(mpc current -f '%file%')" | sed 's/\.[a-zA-Z0-9]*$//')"
+mpd_current_file="$(basename "$(mpc current)" | sed 's/^Classical Minnesota Public Radio:/MPR:/')"
+
+if [[ "$mpd_status" == "paused" ]]; then
+  icon="${ICON_PAUSE}"
+elif [[ "$mpd_status" == "playing" ]]; then
+  icon="${ICON_PLAY}"
+fi
+
+echo "${icon}  $mpd_current_file"
+echo "${icon}  $mpd_current_file"
