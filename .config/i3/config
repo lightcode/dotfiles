@@ -1,0 +1,215 @@
+###########################################################
+# General configuration
+###########################################################
+
+set $mod Mod4
+
+font pango:DejaVu Sans Mono 8
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# This prevent the focus to follow mouse movements
+focus_follows_mouse no
+
+gaps inner 10
+gaps outer 0
+for_window [class="^.*"] border pixel 2
+smart_borders on
+
+
+###########################################################
+# Workspaces
+###########################################################
+
+set $ws1 "0: 1:  "
+set $ws2 "1: 2:  "
+set $ws3 "2: 3:  "
+set $ws4 "3: 4 "
+set $ws5 "4: 5 "
+set $ws6 "5: 6 "
+set $ws7 "6: 7 "
+set $ws8 "7: 8 "
+set $ws9 "8: 9 "
+set $ws10 "9: 10 "
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+
+
+###########################################################
+# Key bindings
+###########################################################
+
+### i3
+
+# rename workspace
+bindsym $mod+Shift+y exec i3-input -F 'rename workspace to "%s"' -P 'New name: '
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+z layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+q focus parent
+
+# focus the child container
+#bindsym $mod+d focus child
+
+bindsym $mod+Prior workspace prev
+bindsym $mod+Next workspace next
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+
+## APPLICATIONS
+
+# start a terminal
+bindsym $mod+Return exec i3-sensible-terminal
+
+bindsym $mod+d exec --no-startup-id rofi -show run -font "DejaVu Sans Mono 12" -width 40 -opacity 80
+bindsym Print exec take-screenshot
+bindsym Shift+Print exec take-screenshot -s
+
+bindsym XF86AudioMute exec amixer -q set Master toggle
+bindsym XF86AudioLowerVolume exec amixer -q set Master 2%- unmute
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 2%+ unmute
+
+bindsym $mod+F12 exec sleep 1s && xset dpms force off
+bindsym $mod+P exec screen-hotplug
+
+bindsym XF86Calculator exec galculator
+
+bindsym XF86MonBrightnessUp exec xbacklight -inc 5 -steps 1
+bindsym XF86MonBrightnessDown exec xbacklight -dec 5 -steps 1
+
+bindsym $mod+l exec lock
+
+
+###########################################################
+# Resize mode
+###########################################################
+
+mode "resize" {
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+
+###########################################################
+# Custom application options
+###########################################################
+
+assign [class="^Thunderbird$"] $ws3
+
+for_window [title="^galculator$"] floating enable
+
+
+###########################################################
+# Colors
+###########################################################
+
+set $trwhite        #eeeeeeaa
+set $light_blue     #3b6ba3
+set $dark_blue      #2f343f
+set $grey_text      #888888
+set $white_text     #dddddd
+set $urgent         #cf0f0f
+set $transparent    #61a1a800
+
+#                       border      background  text        indicator
+client.focused          $light_blue $light_blue $white_text $light_blue
+client.focused_inactive $dark_blue  $dark_blue  $grey_text  $dark_blue
+client.unfocused        $dark_blue  $dark_blue  $grey_text  $dark_blue
+client.urgent           $urgent     $urgent     $text       $urgent
+
+bar {
+    i3bar_command i3bar -t
+    font pango:DejaVu Sans Mono 8, FontAwesome 8
+    status_command i3blocks -c ~/.config/i3/i3blocks.conf
+    position top
+    separator_symbol " "
+    strip_workspace_numbers yes
+
+    colors {
+        background $transparent
+        statusline $trwhite
+
+        focused_workspace  $trwhite     $trwhite     $transparent
+        active_workspace   $trwhite     $trwhite     $transparent
+        inactive_workspace $transparent $transparent $trwhite
+        urgent_workspace   $transparent $transparent $urgent
+    }
+}
+
+
+###########################################################
+# Start application on startup
+###########################################################
+
+exec --no-startup-id thunderbird
