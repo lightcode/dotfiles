@@ -1,8 +1,3 @@
-####################################################
-## this is example configuration file, copy it to ##
-## ~/.ncmpcpp/config and set up your preferences  ##
-####################################################
-#
 ##### directories ######
 ##
 ## Directory for storing ncmpcpp related files.
@@ -12,7 +7,7 @@
 ## file which defines that while launching ncmpcpp.
 ##
 
-ncmpcpp_directory = ~/.ncmpcpp
+ncmpcpp_directory = ~/.config/ncmpcpp
 
 ##
 ## Directory for storing downloaded lyrics. It
@@ -272,9 +267,9 @@ mpd_music_dir = ~/Music
 ##   tag and then composer and performer if previous ones are
 ##   not available.
 ##
-#
-#song_columns_list_format = (20)[]{a} (6f)[green]{NE} (50)[white]{t|f:Title} (20)[cyan]{b} (7f)[magenta]{l}
-#
+
+song_columns_list_format = (20)[white]{a} (6f)[white]{NE} (50)[blue]{t|f:Title} (20)[white]{b} (7f)[white]{l}
+
 ##### various settings #####
 #
 ##
