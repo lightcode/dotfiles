@@ -34,8 +34,14 @@ elif [[ "$mpd_status" != "playing" ]] && [[ "$mpd_status" != "paused" ]]; then
   exit 0
 fi
 
-# mpd_current_file="$(basename "$(mpc current -f '%file%')" | sed 's/\.[a-zA-Z0-9]*$//')"
-mpd_current_file="$(basename "$(mpc current)" | sed 's/^Classical Minnesota Public Radio:/MPR:/')"
+mpd_current_file="$(basename "$(mpc current)" | sed -e 's/^Classical Minnesota Public Radio:/MPR:/' \
+                                                    -e 's/\.[a-zA-Z0-9]*$//')"
+
+mpd_current_file2="$(echo $mpd_current_file | cut -c 1-70)"
+
+if [[ "$mpd_current_file" != "$mpd_current_file2" ]]; then
+  mpd_current_file="${mpd_current_file2}..."
+fi
 
 if [[ "$mpd_status" == "paused" ]]; then
   icon="${ICON_PAUSE}"
