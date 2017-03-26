@@ -133,7 +133,7 @@ bindsym XF86AudioLowerVolume exec amixer -q set Master 2%- unmute
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 2%+ unmute
 
 bindsym $mod+F12 exec sleep 1s && xset dpms force off
-bindsym $mod+P exec screen-hotplug
+bindsym $mod+P exec switch-screen -A biggest
 
 bindsym XF86Calculator exec galculator
 
