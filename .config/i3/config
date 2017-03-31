@@ -162,6 +162,23 @@ bindsym $mod+r mode "resize"
 
 
 ###########################################################
+# Control mode
+###########################################################
+
+set $session " (E)xit   (P)oweroff   (R)eboot"
+mode  $session {
+    bindsym e exec i3-msg exit; mode "default"
+    bindsym p exec systemctl poweroff; mode "default"
+    bindsym r exec systemctl reboot; mode "default"
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+k mode $session
+
+
+###########################################################
 # Custom application options
 ###########################################################
 
