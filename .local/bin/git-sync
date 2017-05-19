@@ -115,15 +115,15 @@ check_initial_file_state()
 {
     local syncNew="$(git config --get --bool branch.$branch_name.syncNewFiles)"
     if [ "true" == "$syncNew" ]; then
-	# allow for new files
-	if [ ! -z "$(git status --porcelain | grep -E '^[^ \?][^M\?] *')" ]; then
-	    echo "NonNewOrModified"
-	fi
+      # allow for new files
+      if [ ! -z "$(git status --porcelain | grep -E '^[^ \?][^M\?] *')" ]; then
+          echo "NonNewOrModified"
+      fi
     else
-	# also bail on new files
-	if [ ! -z "$(git status --porcelain | grep -E '^[^ ][^M] *')" ]; then
-	    echo "NotOnlyModified"
-	fi
+      # also bail on new files
+      if [ ! -z "$(git status --porcelain | grep -E '^[^ MARD][ ].*')" ]; then
+          echo "NotOnlyModified"
+      fi
     fi
 }
 
