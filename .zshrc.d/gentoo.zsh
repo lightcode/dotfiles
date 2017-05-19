@@ -1,5 +1,24 @@
 alias emerge-clean='sudo emerge --ask --depclean; sudo eclean-dist -d'
-alias emerge-upgrade='sudo emerge --verbose --ask --update --deep --changed-use --with-bdeps=y @world'
+
+function emerge-upgrade() {
+  local -a deep use help
+  zparseopts d=deep u=use h=help
+
+  if [[ $+help[1] == 1 ]]; then
+    echo "emerge-upgrade [-d] [-u]"
+    echo
+    echo "Flags:"
+    echo "\t-d : deep upgrade"
+    echo "\t-u : changed use"
+    return
+  fi
+
+  args=(sudo emerge --verbose --ask --update)
+  [[ $+deep[1] == 1 ]] && args+=(--deep --with-bdeps=y)
+  [[ $+use[1] == 1 ]] && args+="--changed-use"
+  args+="@world"
+  $args
+}
 
 function kernel-upgrade() {
   local current_version="$(uname -r)"
