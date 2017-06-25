@@ -47,11 +47,3 @@ open() {
 
   xdg-open $args &>/dev/null &!
 }
-
-
-#########################
-# Fuzzy finder
-#########################
-
-# Source fzf (https://github.com/junegunn/fzf)
-[[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
