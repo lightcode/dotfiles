@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -44,9 +44,9 @@ if power > 0:
 if round(power / 1e6) > 0 and status == "Discharging":
     text += " / {:.0f} W".format(round(power / 1e6))
 
-print text.encode("utf-8")
-print text.encode("utf-8")
-print colors[level]
+print(text)
+print(text)
+print(colors[level])
 
 if capacity <= 5:
     sys.exit(33)
