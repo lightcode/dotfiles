@@ -165,11 +165,12 @@ bindsym $mod+r mode "resize"
 # Control mode
 ###########################################################
 
-set $session " (E)xit   (P)oweroff   (R)eboot"
+set $session " (E)xit   (P)oweroff   (R)eboot  (S)uspend"
 mode $session {
     bindsym e exec i3-msg exit; mode "default"
     bindsym p exec sudo systemctl poweroff; mode "default"
     bindsym r exec sudo systemctl reboot; mode "default"
+    bindsym s exec sudo systemctl suspend; mode "default"
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
